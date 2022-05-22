@@ -15,6 +15,8 @@ impl Bank {
     fn reduce(&self, value: impl Expression, currency: Currency) -> Money {
         value.reduce(currency)
     }
+
+    fn add_rate(&self, c1: Currency, c2: Currency, ratio: i32) {}
 }
 
 trait Expression {
@@ -50,9 +52,14 @@ impl Expression for Money {
     }
 
     fn reduce(&self, to: Currency) -> Money {
-        *self
-    }
-
+        match (self.currency, to) {
+            (Currency::Dollar, Currency::Dollar) => *self, 
+            (Currency::Franc, Currency::Franc) => *self, 
+            (Currency::Dollar, Currency::Franc) => Money { amount: self.amount / 1, currency: to }, 
+            (Currency::Franc, Currency::Dollar) => Money { amount: self.amount / 2, currency: to }, 
+            }
+        }
+    
 }
 
 impl Money {
@@ -136,4 +143,12 @@ fn test_reduce_money() {
     let bank = Bank {};
     let result = bank.reduce(Money::dollar(1), Currency::Dollar);
     assert_eq!(Money::dollar(1), result);
+}
+
+#[test]
+fn test_reduce_money_different_currency() {
+    let bank = Bank {}; 
+    bank.add_rate(Currency::Franc, Currency::Dollar, 2); 
+    let result = bank.reduce(Money::franc(2), Currency::Dollar); 
+    assert_eq!(Money::dollar(1), result); 
 }
