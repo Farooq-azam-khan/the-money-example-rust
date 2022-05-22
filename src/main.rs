@@ -12,20 +12,48 @@ enum Currency {
 struct Bank {}
 
 impl Bank {
-    fn reduce<T: Expression>(&self, value: T, currency: Currency) -> T {
-        value 
+    fn reduce(&self, value: impl Expression, currency: Currency) -> Money {
+        value.reduce(currency)
     }
 }
 
-trait Expression {}
+trait Expression {
+    fn plus(&self, money: Money) -> Sum; 
+    fn reduce(&self, to: Currency) -> Money; 
+}
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Copy, Clone, Debug)]
 struct Money {
     amount: i32, 
     currency: Currency 
 }
 
-impl Expression for Money {}
+#[derive(Debug)]
+struct Sum {
+    augend: Money,
+    addend: Money
+}
+
+impl Expression for Sum {
+    fn plus(&self, m: Money) -> Sum {
+        Sum { augend: self.augend, addend: self.addend }
+    }
+
+    fn reduce(&self, to: Currency) -> Money {
+        Money { amount: self.augend.amount + self.addend.amount, currency: to }
+    }
+}
+
+impl Expression for Money {
+    fn plus(&self, money: Money) -> Sum {
+        Sum { augend: Money { amount: self.amount, currency: self.currency }, addend: money }
+    }
+
+    fn reduce(&self, to: Currency) -> Money {
+        *self
+    }
+
+}
 
 impl Money {
     fn times(&self, multiplier: i32) -> Money {
@@ -44,9 +72,6 @@ impl Money {
         self.amount == money.amount && self.currency == money.currency
     }
 
-    fn plus(&self, money: Money) -> Money {
-        Money { amount: self.amount + money.amount, currency: self.currency }
-    }
 }
 
 
@@ -88,4 +113,27 @@ fn test_simple_addition() {
     let bank = Bank {}; 
     let reduced = bank.reduce(sum, Currency::Dollar);
     assert_eq!(Money::dollar(10), reduced);
+}
+
+#[test]
+fn test_plus_returns_sum() {
+    let five = Money::dollar(5);
+    let sum: Sum = five.plus(Money::dollar(5)); 
+    assert_eq!(five, sum.augend); 
+    assert_eq!(five, sum.addend); 
+}
+
+#[test]
+fn test_reduce_sum() {
+    let sum = Sum { augend: Money::dollar(3), addend: Money::dollar(4) };
+    let bank = Bank {};
+    let result = bank.reduce(sum, Currency::Dollar);
+    assert_eq!(Money::dollar(7), result); 
+}
+
+#[test]
+fn test_reduce_money() {
+    let bank = Bank {};
+    let result = bank.reduce(Money::dollar(1), Currency::Dollar);
+    assert_eq!(Money::dollar(1), result);
 }
