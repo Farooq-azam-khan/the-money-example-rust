@@ -9,7 +9,7 @@ struct Dollar {
 
 impl Dollar {
     fn times(&mut self, multiplier: i32) {
-        self.amount = self.amount*2;//10;
+        self.amount = self.amount*multiplier;
     }
 }
 fn main() {
