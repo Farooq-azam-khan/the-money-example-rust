@@ -3,6 +3,7 @@
  2. Need to be able to multiply an amount (price per share) by a number (number of shares) and receive an amount
 */
 
+#[derive(PartialEq, Debug)]
 struct Dollar {
     amount: i32
 }
@@ -25,9 +26,11 @@ fn main() {
 fn test_multiplication() {
     let five = Dollar {amount: 5};
     let prod1 = five.times(2);
-    assert_eq!(10, prod1.amount);
+    //assert_eq!(10, prod1.amount);
+    assert_eq!(Dollar {amount: 10}, prod1);
     let prod2 = five.times(3);
-    assert_eq!(15, prod2.amount);
+    //assert_eq!(15, prod2.amount);
+    assert_eq!(Dollar {amount: 15}, prod2);
 }
 
 #[test]
