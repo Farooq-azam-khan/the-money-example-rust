@@ -28,11 +28,6 @@ impl Dollar {
     fn times(&self, multiplier: i32) -> Dollar {
         Dollar { amount: self.amount * multiplier }
     }
-
-    /*fn equals(&self, dollar: Dollar) -> bool {
-        self.amount == dollar.amount
-    }
-    */
 }
 
 
@@ -45,11 +40,6 @@ impl Franc {
     fn times(&self, multiplier: i32) -> Franc {
         Franc { amount: self.amount * multiplier }
     }
-/*
-    fn equals(&self, franc: Franc) -> bool {
-        self.amount == franc.amount
-    }
-*/
 }
 fn main() {
     println!("Hello, world!");
@@ -67,6 +57,9 @@ fn test_multiplication() {
 fn test_equality() {
     assert!((Money {amount: 5, currency: Currency::Dollar}).equals(Money {amount: 5, currency: Currency::Dollar}));
     assert!(!(Money {amount: 5, currency: Currency::Dollar}).equals(Money {amount: 6, currency: Currency::Dollar}));
+    assert!((Money {amount: 5, currency: Currency::Franc}).equals(Money {amount: 5, currency: Currency::Franc}));
+    assert!(!(Money {amount: 5, currency: Currency::Franc}).equals(Money {amount: 6, currency: Currency::Franc}));
+
 }
 
 #[test]
@@ -74,13 +67,6 @@ fn test_franc_multiplication() {
     let five = Franc {amount: 5};
     assert_eq!(Franc {amount: 10}, five.times(2));
     assert_eq!(Franc {amount: 15}, five.times(3));
-}
-
-
-#[test]
-fn test_franc_equality() {
-    assert!((Money {amount: 5, currency: Currency::Franc}).equals(Money {amount: 5, currency: Currency::Franc}));
-    assert!(!(Money {amount: 5, currency: Currency::Franc}).equals(Money {amount: 6, currency: Currency::Franc}));
 }
 
 
