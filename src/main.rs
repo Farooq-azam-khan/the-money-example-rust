@@ -11,6 +11,10 @@ impl Dollar {
     fn times(&self, multiplier: i32) -> Dollar {
         Dollar {amount: self.amount*multiplier}
     }
+
+    fn equals(&self, dollar: Dollar) -> bool {
+        self.amount == dollar.amount
+    }
 }
 fn main() {
     println!("Hello, world!");
@@ -24,4 +28,12 @@ fn test_multiplication() {
     assert_eq!(10, prod1.amount);
     let prod2 = five.times(3);
     assert_eq!(15, prod2.amount);
+}
+
+#[test]
+fn test_equality() {
+    assert!((Dollar {amount: 5}).equals(Dollar {amount: 5}));
+    //assert_eq!(Dollar {amount: 5}, Dollar {amount: 5}); // implement partial equal (builtin
+    //equality)
+    assert!(!(Dollar {amount: 5}).equals(Dollar {amount: 6}));
 }
