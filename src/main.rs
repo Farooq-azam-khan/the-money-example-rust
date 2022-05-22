@@ -8,8 +8,8 @@ struct Dollar {
 }
 
 impl Dollar {
-    fn times(&mut self, multiplier: i32) {
-        self.amount = self.amount*multiplier;
+    fn times(&self, multiplier: i32) -> Dollar {
+        Dollar {amount: self.amount*multiplier}
     }
 }
 fn main() {
@@ -20,6 +20,8 @@ fn main() {
 #[test]
 fn test_multiplication() {
     let mut five = Dollar {amount: 5};
-    five.times(2);
-    assert_eq!(10, five.amount)
+    let prod1 = five.times(2);
+    assert_eq!(10, prod1.amount);
+    let prod2 = five.times(3);
+    assert_eq!(15, prod2.amount);
 }
