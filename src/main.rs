@@ -23,7 +23,7 @@ fn main() {
 
 #[test]
 fn test_multiplication() {
-    let mut five = Dollar {amount: 5};
+    let five = Dollar {amount: 5};
     let prod1 = five.times(2);
     assert_eq!(10, prod1.amount);
     let prod2 = five.times(3);
