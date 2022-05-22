@@ -27,10 +27,10 @@ fn test_multiplication() {
     let five = Dollar {amount: 5};
     let prod1 = five.times(2);
     //assert_eq!(10, prod1.amount);
-    assert_eq!(Dollar {amount: 10}, prod1);
+    assert_eq!(Dollar {amount: 10}, five.times(2)); // prod1);
     let prod2 = five.times(3);
     //assert_eq!(15, prod2.amount);
-    assert_eq!(Dollar {amount: 15}, prod2);
+    assert_eq!(Dollar {amount: 15}, five.times(3)); // prod2);
 }
 
 #[test]
