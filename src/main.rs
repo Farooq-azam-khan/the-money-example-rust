@@ -31,6 +31,10 @@ impl Money {
     fn equals(&self, money: Money) -> bool {
         self.amount == money.amount && self.currency == money.currency
     }
+
+    fn plus(&self, money: Money) -> Money {
+        Money { amount: self.amount + money.amount, currency: self.currency }
+    }
 }
 
 
@@ -65,4 +69,8 @@ fn test_franc_multiplication() {
     assert_eq!(Money::franc(15), five.times(3));
 }
 
-
+#[test]
+fn test_simple_addition() {
+    let sum = Money::dollar(5).plus(Money::dollar(5));
+    assert_eq!(Money::dollar(10), sum);
+}
