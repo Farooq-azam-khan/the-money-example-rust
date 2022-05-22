@@ -9,11 +9,23 @@ enum Currency {
     Franc 
 }
 
+struct Bank {}
+
+impl Bank {
+    fn reduce<T: Expression>(&self, value: T, currency: Currency) -> T {
+        value 
+    }
+}
+
+trait Expression {}
+
 #[derive(PartialEq, Debug)]
 struct Money {
     amount: i32, 
     currency: Currency 
 }
+
+impl Expression for Money {}
 
 impl Money {
     fn times(&self, multiplier: i32) -> Money {
@@ -71,6 +83,9 @@ fn test_franc_multiplication() {
 
 #[test]
 fn test_simple_addition() {
-    let sum = Money::dollar(5).plus(Money::dollar(5));
-    assert_eq!(Money::dollar(10), sum);
+    let five = Money::dollar(5); 
+    let sum = five.plus(Money::dollar(5));  
+    let bank = Bank {}; 
+    let reduced = bank.reduce(sum, Currency::Dollar);
+    assert_eq!(Money::dollar(10), reduced);
 }
