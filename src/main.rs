@@ -10,11 +10,27 @@ struct Dollar {
 
 impl Dollar {
     fn times(&self, multiplier: i32) -> Dollar {
-        Dollar {amount: self.amount*multiplier}
+        Dollar { amount: self.amount * multiplier }
     }
 
     fn equals(&self, dollar: Dollar) -> bool {
         self.amount == dollar.amount
+    }
+}
+
+
+#[derive(PartialEq, Debug)]
+struct Franc {
+    amount: i32
+}
+
+impl Franc {
+    fn times(&self, multiplier: i32) -> Franc {
+        Franc { amount: self.amount * multiplier }
+    }
+
+    fn equals(&self, franc: Franc) -> bool {
+        self.amount == franc.amount
     }
 }
 fn main() {
@@ -36,3 +52,19 @@ fn test_equality() {
     //equality)
     assert!(!(Dollar {amount: 5}).equals(Dollar {amount: 6}));
 }
+
+#[test]
+fn test_franc_multiplication() {
+    let five = Franc {amount: 5};
+    assert_eq!(Franc {amount: 10}, five.times(2));
+    assert_eq!(Franc {amount: 15}, five.times(3));
+}
+
+
+#[test]
+fn test_franc_equality() {
+    assert!((Franc {amount: 5}).equals(Franc {amount: 5}));
+    assert!(!(Franc {amount: 5}).equals(Franc {amount: 6}));
+}
+
+
