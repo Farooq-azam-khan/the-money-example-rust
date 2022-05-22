@@ -3,6 +3,22 @@
  2. Need to be able to multiply an amount (price per share) by a number (number of shares) and receive an amount
 */
 
+enum Currency {
+    Dollar,
+    Franc 
+}
+
+struct Money {
+    amount: i32, 
+    currency: Currency 
+}
+
+impl Money {
+    fn equals(&self, money: Money) -> bool {
+        self.amount == money.amount
+    }
+}
+
 #[derive(PartialEq, Debug)]
 struct Dollar {
     amount: i32
@@ -13,9 +29,10 @@ impl Dollar {
         Dollar { amount: self.amount * multiplier }
     }
 
-    fn equals(&self, dollar: Dollar) -> bool {
+    /*fn equals(&self, dollar: Dollar) -> bool {
         self.amount == dollar.amount
     }
+    */
 }
 
 
@@ -28,10 +45,11 @@ impl Franc {
     fn times(&self, multiplier: i32) -> Franc {
         Franc { amount: self.amount * multiplier }
     }
-
+/*
     fn equals(&self, franc: Franc) -> bool {
         self.amount == franc.amount
     }
+*/
 }
 fn main() {
     println!("Hello, world!");
@@ -47,10 +65,8 @@ fn test_multiplication() {
 
 #[test]
 fn test_equality() {
-    assert!((Dollar {amount: 5}).equals(Dollar {amount: 5}));
-    //assert_eq!(Dollar {amount: 5}, Dollar {amount: 5}); // implement partial equal (builtin
-    //equality)
-    assert!(!(Dollar {amount: 5}).equals(Dollar {amount: 6}));
+    assert!((Money {amount: 5, currency: Currency::Dollar}).equals(Money {amount: 5, currency: Currency::Dollar}));
+    assert!(!(Money {amount: 5, currency: Currency::Dollar}).equals(Money {amount: 6, currency: Currency::Dollar}));
 }
 
 #[test]
@@ -63,8 +79,8 @@ fn test_franc_multiplication() {
 
 #[test]
 fn test_franc_equality() {
-    assert!((Franc {amount: 5}).equals(Franc {amount: 5}));
-    assert!(!(Franc {amount: 5}).equals(Franc {amount: 6}));
+    assert!((Money {amount: 5, currency: Currency::Franc}).equals(Money {amount: 5, currency: Currency::Franc}));
+    assert!(!(Money {amount: 5, currency: Currency::Franc}).equals(Money {amount: 6, currency: Currency::Franc}));
 }
 
 
