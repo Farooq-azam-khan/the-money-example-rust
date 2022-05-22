@@ -20,11 +20,18 @@ impl Money {
         Money { amount: self.amount * multiplier, currency: self.currency }
     }
 
+    fn dollar(amount: i32) -> Money {
+        Money { currency: Currency::Dollar, amount }
+    }
+
+    fn franc(amount: i32) -> Money {
+        Money { currency: Currency::Franc, amount }
+    }
+
     fn equals(&self, money: Money) -> bool {
-        self.amount == money.amount
+        self.amount == money.amount && self.currency == money.currency
     }
 }
-
 
 
 fn main() {
@@ -34,25 +41,28 @@ fn main() {
 
 #[test]
 fn test_multiplication() {
-    let five = Money { amount: 5, currency: Currency::Dollar };
-    assert_eq!(Money { amount: 10, currency: Currency::Dollar }, five.times(2)); 
-    assert_eq!(Money { amount: 15, currency: Currency::Dollar }, five.times(3));
+    let five = Money::dollar(5);
+    assert_eq!(Money::dollar(10), five.times(2)); 
+    assert_eq!(Money::dollar(15), five.times(3));
 }
 
 #[test]
 fn test_equality() {
-    assert!((Money {amount: 5, currency: Currency::Dollar}).equals(Money {amount: 5, currency: Currency::Dollar}));
-    assert!(!(Money {amount: 5, currency: Currency::Dollar}).equals(Money {amount: 6, currency: Currency::Dollar}));
-    assert!((Money {amount: 5, currency: Currency::Franc}).equals(Money {amount: 5, currency: Currency::Franc}));
-    assert!(!(Money {amount: 5, currency: Currency::Franc}).equals(Money {amount: 6, currency: Currency::Franc}));
+    assert!(Money::dollar(5).equals(Money::dollar(5)));
+    assert!(!Money::dollar(5).equals(Money::dollar(6)));
+    assert!(Money::franc(5).equals(Money::franc(5)));
+    assert!(!Money::franc(5).equals(Money::franc(6)));
+
+    // franc with dollars
+    assert!(!Money::franc(5).equals(Money::dollar(5)));
 
 }
 
 #[test]
 fn test_franc_multiplication() {
-    let five = Money {amount: 5, currency: Currency::Franc};
-    assert_eq!(Money {amount: 10, currency: Currency::Franc}, five.times(2));
-    assert_eq!(Money {amount: 15, currency: Currency::Franc}, five.times(3));
+    let five = Money::franc(5);
+    assert_eq!(Money::franc(10), five.times(2));
+    assert_eq!(Money::franc(15), five.times(3));
 }
 
 
