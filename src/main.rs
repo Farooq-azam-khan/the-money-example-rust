@@ -1,10 +1,20 @@
+use std::collections::HashMap; 
+
 #[derive(PartialEq, Copy, Clone, Debug)]
 enum Currency {
     Dollar,
     Franc 
 }
 
-struct Bank {}
+#[derive(PartialEq)]
+struct Pair {
+    from: Currency, 
+    to: Currency 
+}
+
+struct Bank {
+    rates: HashMap<Pair, i32>
+}
 
 trait Expression {
     fn plus(&self, money: Money) -> Sum; 
@@ -24,6 +34,10 @@ struct Sum {
 }
 
 impl Bank {
+    fn new() -> Bank {
+        Bank { rates: HashMap::new() }
+    }
+
     fn rate(&self, from: Currency, to: Currency) -> i32 {
         let rate = match (from, to) {
             (Currency::Dollar, Currency::Dollar) => 1,
@@ -119,7 +133,7 @@ fn test_franc_multiplication() {
 fn test_simple_addition() {
     let five = Money::dollar(5); 
     let sum = five.plus(Money::dollar(5));  
-    let bank = Bank {}; 
+    let bank = Bank::new();
     let reduced = bank.reduce(sum, Currency::Dollar);
     assert_eq!(Money::dollar(10), reduced);
 }
@@ -135,21 +149,21 @@ fn test_plus_returns_sum() {
 #[test]
 fn test_reduce_sum() {
     let sum = Sum { augend: Money::dollar(3), addend: Money::dollar(4) };
-    let bank = Bank {};
+    let bank = Bank::new();
     let result = bank.reduce(sum, Currency::Dollar);
     assert_eq!(Money::dollar(7), result); 
 }
 
 #[test]
 fn test_reduce_money() {
-    let bank = Bank {};
+    let bank = Bank::new();
     let result = bank.reduce(Money::dollar(1), Currency::Dollar);
     assert_eq!(Money::dollar(1), result);
 }
 
 #[test]
 fn test_reduce_money_different_currency() {
-    let bank = Bank {}; 
+    let bank = Bank { rates: HashMap::new() }; 
     bank.add_rate(Currency::Franc, Currency::Dollar, 2); 
     let result = bank.reduce(Money::franc(2), Currency::Dollar); 
     assert_eq!(Money::dollar(1), result); 
