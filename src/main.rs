@@ -1,8 +1,3 @@
-/* 
- 1. Add amounts in two different currencies and convert the result to a set of exchange rates
- 2. Need to be able to multiply an amount (price per share) by a number (number of shares) and receive an amount
-*/
-
 #[derive(PartialEq, Copy, Clone, Debug)]
 enum Currency {
     Dollar,
@@ -11,17 +6,9 @@ enum Currency {
 
 struct Bank {}
 
-impl Bank {
-    fn reduce(&self, value: impl Expression, currency: Currency) -> Money {
-        value.reduce(currency)
-    }
-
-    fn add_rate(&self, c1: Currency, c2: Currency, ratio: i32) {}
-}
-
 trait Expression {
     fn plus(&self, money: Money) -> Sum; 
-    fn reduce(&self, to: Currency) -> Money; 
+    fn reduce(&self, bank: &Bank, to: Currency) -> Money; 
 }
 
 #[derive(PartialEq, Copy, Clone, Debug)]
@@ -36,12 +23,31 @@ struct Sum {
     addend: Money
 }
 
+impl Bank {
+    fn rate(&self, from: Currency, to: Currency) -> i32 {
+        let rate = match (from, to) {
+            (Currency::Dollar, Currency::Dollar) => 1,
+            (Currency::Franc, Currency::Franc) => 1, 
+            (Currency::Dollar, Currency::Franc) => 1, 
+            (Currency::Franc, Currency::Dollar) => 2, 
+        };
+        rate
+
+
+    }
+    fn reduce(&self, value: impl Expression, currency: Currency) -> Money {
+            value.reduce(self, currency)
+    }
+
+    fn add_rate(&self, c1: Currency, c2: Currency, ratio: i32) {}
+}
+
 impl Expression for Sum {
     fn plus(&self, m: Money) -> Sum {
         Sum { augend: self.augend, addend: self.addend }
     }
 
-    fn reduce(&self, to: Currency) -> Money {
+    fn reduce(&self, bank: &Bank, to: Currency) -> Money {
         Money { amount: self.augend.amount + self.addend.amount, currency: to }
     }
 }
@@ -51,14 +57,10 @@ impl Expression for Money {
         Sum { augend: Money { amount: self.amount, currency: self.currency }, addend: money }
     }
 
-    fn reduce(&self, to: Currency) -> Money {
-        match (self.currency, to) {
-            (Currency::Dollar, Currency::Dollar) => *self, 
-            (Currency::Franc, Currency::Franc) => *self, 
-            (Currency::Dollar, Currency::Franc) => Money { amount: self.amount / 1, currency: to }, 
-            (Currency::Franc, Currency::Dollar) => Money { amount: self.amount / 2, currency: to }, 
-            }
-        }
+    fn reduce(&self, bank: &Bank, to: Currency) -> Money {
+        let rate = bank.rate(self.currency, to); 
+        Money { amount: self.amount / rate, currency: to }
+    }
     
 }
 
