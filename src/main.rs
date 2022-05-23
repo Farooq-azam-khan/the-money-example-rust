@@ -1,24 +1,14 @@
 use std::collections::HashMap; 
 
-#[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
-enum Currency {
-    Dollar,
-    Franc 
-}
-
-#[derive(Eq, Hash, PartialEq)]
-struct Pair {
-    from: Currency, 
-    to: Currency 
-}
-
+// Domain Specific types
 struct Bank {
     rates: HashMap<Pair, i32>
 }
 
-trait Expression {
-    fn plus(&self, money: Money) -> Sum; 
-    fn reduce(&self, bank: &Bank, to: Currency) -> Money; 
+#[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
+enum Currency {
+    Dollar,
+    Franc 
 }
 
 #[derive(PartialEq, Copy, Clone, Debug)]
@@ -27,12 +17,25 @@ struct Money {
     currency: Currency 
 }
 
+// Helper types and traits
+#[derive(Eq, Hash, PartialEq)]
+struct Pair {
+    from: Currency, 
+    to: Currency 
+}
+
+trait Expression {
+    fn plus(&self, money: Money) -> Sum; 
+    fn reduce(&self, bank: &Bank, to: Currency) -> Money; 
+}
+
 #[derive(Debug)]
 struct Sum {
     augend: Money,
     addend: Money
 }
 
+// Implementations 
 impl Bank {
     fn new() -> Bank {
         Bank { rates: HashMap::new() }
