@@ -39,13 +39,11 @@ impl Bank {
     }
 
     fn rate(&self, from: Currency, to: Currency) -> i32 {
-        let rate = match (from, to) {
-            (Currency::Dollar, Currency::Dollar) => 1,
-            (Currency::Franc, Currency::Franc) => 1, 
-            (Currency::Dollar, Currency::Franc) => 1, 
-            (Currency::Franc, Currency::Dollar) => 2, 
-        };
-        rate
+        if from == to {
+            return 1; 
+        }
+        let rate = self.rates.get(&Pair { from, to }).unwrap(); 
+        *rate
 
 
     }
@@ -169,4 +167,9 @@ fn test_reduce_money_different_currency() {
     bank.add_rate(Currency::Franc, Currency::Dollar, 2); 
     let result = bank.reduce(Money::franc(2), Currency::Dollar); 
     assert_eq!(Money::dollar(1), result); 
+}
+
+#[test]
+fn test_identity_rate() {
+    assert_eq!(1, Bank::new().rate(Currency::Dollar, Currency::Dollar));
 }
