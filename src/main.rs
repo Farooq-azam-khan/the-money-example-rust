@@ -62,7 +62,9 @@ impl Expression for Sum {
     }
 
     fn reduce(&self, bank: &Bank, to: Currency) -> Money {
-        Money { amount: self.augend.amount + self.addend.amount, currency: to }
+        Money { amount: 
+                self.augend.reduce(bank, to).amount + self.addend.reduce(bank, to).amount, 
+            currency: to }
     }
 }
 
@@ -172,4 +174,14 @@ fn test_reduce_money_different_currency() {
 #[test]
 fn test_identity_rate() {
     assert_eq!(1, Bank::new().rate(Currency::Dollar, Currency::Dollar));
+}
+
+#[test]
+fn test_mixed_addition() {
+    let fiveDollars = Money::dollar(5); 
+    let tenFrancs = Money::franc(10); 
+    let mut bank = Bank::new(); 
+    bank.add_rate(Currency::Franc, Currency::Dollar, 2); 
+    let result = bank.reduce(fiveDollars.plus(tenFrancs), Currency::Dollar); 
+    assert_eq!(Money::dollar(10), result); 
 }
