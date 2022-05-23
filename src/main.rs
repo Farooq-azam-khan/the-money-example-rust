@@ -1,12 +1,12 @@
 use std::collections::HashMap; 
 
-#[derive(PartialEq, Copy, Clone, Debug)]
+#[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
 enum Currency {
     Dollar,
     Franc 
 }
 
-#[derive(PartialEq)]
+#[derive(Eq, Hash, PartialEq)]
 struct Pair {
     from: Currency, 
     to: Currency 
@@ -53,7 +53,9 @@ impl Bank {
             value.reduce(self, currency)
     }
 
-    fn add_rate(&self, c1: Currency, c2: Currency, ratio: i32) {}
+    fn add_rate(&mut self, from: Currency, to: Currency, ratio: i32) {
+        self.rates.insert(Pair {from, to}, ratio);
+    }
 }
 
 impl Expression for Sum {
@@ -163,7 +165,7 @@ fn test_reduce_money() {
 
 #[test]
 fn test_reduce_money_different_currency() {
-    let bank = Bank { rates: HashMap::new() }; 
+    let mut bank = Bank { rates: HashMap::new() }; 
     bank.add_rate(Currency::Franc, Currency::Dollar, 2); 
     let result = bank.reduce(Money::franc(2), Currency::Dollar); 
     assert_eq!(Money::dollar(1), result); 
